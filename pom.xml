@@ -8,7 +8,7 @@
     <modules>
         <module>api</module>
         <module>executor</module>
-        <module>custompugin1</module>
+        <module>customplugin1</module>
         <module>customplugin2</module>
     </modules>
     <packaging>pom</packaging>

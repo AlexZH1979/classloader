@@ -33,7 +33,7 @@ public class Performer {
         init(name);
     }
 
-    public void showPlugins() throws IOException {
+    public void showPlugins(){
         for (String key : plugins.keySet()) {
             System.out.println(PLUGIN + key);
         }
