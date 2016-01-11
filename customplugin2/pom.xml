@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.epam.zhmyd</groupId>
             <artifactId>api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
