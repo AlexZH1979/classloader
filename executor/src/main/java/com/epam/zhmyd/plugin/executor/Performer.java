@@ -2,11 +2,12 @@ package com.epam.zhmyd.plugin.executor;
 
 
 import com.epam.zhmyd.plugin.api.Plugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -15,13 +16,12 @@ import java.util.Properties;
 
 public class Performer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Performer.class);
+
     private static final String PROPERTIES_FILE = "info.properties";
     public static final String PLUGIN_INFO = "plugin.info";
     public static final String PLUGIN_CLASS = "plugin.class";
     public static final String JAR_POSTFIX = ".jar";
-    public static final String CLASS_POSTFIX = ".class";
-    public static final String DOT = ".";
-    public static final String SLASH = "/";
     public static final String PLUGIN = "Plugin: ";
     public static final String PLUGIN_NOT_FOUND = "Plugin not found";
 
@@ -33,7 +33,7 @@ public class Performer {
         init(name);
     }
 
-    public void showPlugins(){
+    public void showPlugins() {
         for (String key : plugins.keySet()) {
             System.out.println(PLUGIN + key);
         }
@@ -61,37 +61,28 @@ public class Performer {
     }
 
     private void parseFile(File file) {
-        if (file.isFile() && file.getName().endsWith(JAR_POSTFIX)) {
+        if (!file.isFile() || !file.getName().endsWith(JAR_POSTFIX)) {
+            return;
+        }
 
-            Properties properties = new Properties();
-            URLClassLoader classLoader = null;
+        Properties properties = new Properties();
+        try {
+            ClassLoader classLoader = new URLClassLoader(new URL[]{file.toURL()});
+            InputStream url = classLoader.getResourceAsStream(PROPERTIES_FILE);
+            if (url != null) {
+                properties.load(url);
 
-            PluginLoader pluginLoader = null;
-            try {
-                classLoader = new URLClassLoader(new URL[]{file.toURL()});
+                String info = properties.getProperty(PLUGIN_INFO);
+                String clazz = properties.getProperty(PLUGIN_CLASS);
 
-                pluginLoader = new PluginLoader(classLoader);
-                InputStream url = classLoader.getResourceAsStream(PROPERTIES_FILE);
-                if (url != null) {
-                    properties.load(url);
+                Class pl = classLoader.loadClass(clazz);
+                Plugin plugin = (Plugin) pl.newInstance();
 
-                    String info = properties.getProperty(PLUGIN_INFO);
-                    String pluginPath = properties.getProperty(PLUGIN_CLASS).replace(DOT, SLASH) + CLASS_POSTFIX;
+                plugins.put(info, plugin);
 
-                    InputStream is = classLoader.getResourceAsStream(pluginPath);
-
-                    Plugin plugin = pluginLoader.loadPlugin(is);
-
-                    plugins.put(info, plugin);
-
-                }
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException|ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 }

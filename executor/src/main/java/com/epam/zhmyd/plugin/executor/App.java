@@ -1,8 +1,6 @@
 package com.epam.zhmyd.plugin.executor;
 
-import java.io.Console;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.Scanner;
 
 public class App {
     private static final String EXIT = "exit";
@@ -18,19 +16,13 @@ public class App {
     }
 
     public static void dispath(Performer performer) {
+
         boolean exit = false;
-        String name = "";
-        Console console = System.console();
-
-        if (console == null) {
-            System.out.println("Unable to fetch console");
-            return;
-        }
-
         while (!exit) {
-            System.out.println("Enter plugin name");
-            name = console.readLine();
-            if(!name.equalsIgnoreCase(EXIT)){
+            Scanner in = new Scanner(System.in);
+            System.out.print("Enter plugin name (or 'exit') : ");
+            String name = in.nextLine();
+            if (!name.equalsIgnoreCase(EXIT)) {
                 performer.runPlugin(name);
             } else {
                 exit = true;
