@@ -19,13 +19,13 @@ public class Performer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Performer.class);
 
     private static final String PROPERTIES_FILE = "info.properties";
-    public static final String PLUGIN_INFO = "plugin.info";
-    public static final String PLUGIN_CLASS = "plugin.class";
-    public static final String JAR_POSTFIX = ".jar";
-    public static final String PLUGIN = "Plugin: ";
-    public static final String PLUGIN_NOT_FOUND = "Plugin not found";
+    private static final String PLUGIN_INFO = "plugin.info";
+    private static final String PLUGIN_CLASS = "plugin.class";
+    private static final String JAR_POSTFIX = ".jar";
+    private static final String PLUGIN = "Plugin: ";
+    private static final String PLUGIN_NOT_FOUND = "Plugin not found";
 
-    private Map<String, Plugin> plugins = new HashMap<>();
+    private final Map<String, Plugin> plugins = new HashMap<>();
 
 
     public Performer(String name) {
@@ -67,7 +67,7 @@ public class Performer {
 
         Properties properties = new Properties();
         try {
-            ClassLoader classLoader = new URLClassLoader(new URL[]{file.toURL()});
+            ClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
             InputStream url = classLoader.getResourceAsStream(PROPERTIES_FILE);
             if (url != null) {
                 properties.load(url);

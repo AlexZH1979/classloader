@@ -15,7 +15,7 @@ public class App {
         }
     }
 
-    public static void dispath(Performer performer) {
+    private static void dispath(Performer performer) {
 
         boolean exit = false;
         while (!exit) {
