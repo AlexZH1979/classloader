@@ -81,7 +81,7 @@ public class Performer {
                 plugins.put(info, plugin);
 
             }
-        } catch (IOException|ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
     }
